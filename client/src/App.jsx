@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { ToastProvider } from './components/ToastContainer';
+import Footer from './components/Footer';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ExamList from './pages/ExamList';
@@ -187,7 +188,12 @@ function App() {
       <AuthProvider>
         <ToastProvider>
           <SocketProvider>
-            <AppRoutes />
+            <div className="min-h-screen flex flex-col">
+              <div className="flex-grow">
+                <AppRoutes />
+              </div>
+              <Footer />
+            </div>
           </SocketProvider>
         </ToastProvider>
       </AuthProvider>
