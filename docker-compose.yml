@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:5
+    container_name: exam_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    networks:
+      - exam_network
+
+  redis:
+    image: redis:alpine
+    container_name: exam_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - exam_network
+
+  backend:
+    build: ./server
+    container_name: exam_backend
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGO_URI: mongodb://admin:admin123@mongo:27017/exam_system?authSource=admin
+      JWT_SECRET: your_jwt_secret_change_in_production
+      REFRESH_TOKEN_SECRET: your_refresh_secret_change_in_production
+      JWT_EXPIRES_IN: 15m
+      REFRESH_EXPIRES_IN: 7d
+      CLIENT_URL: http://localhost:3000
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - exam_network
+
+  frontend:
+    build: ./client
+    container_name: exam_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - exam_network
+
+volumes:
+  mongo_data:
+
+networks:
+  exam_network:
+    driver: bridge

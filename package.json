@@ -1,0 +1,29 @@
+{
+  "name": "online-examination-system",
+  "version": "1.0.0",
+  "description": "Full-stack online examination system with real-time proctoring",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build:client": "cd client && npm run build",
+    "start:server": "cd server && npm start",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [
+    "online-exam",
+    "examination-system",
+    "react",
+    "nodejs",
+    "mongodb",
+    "socketio"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
