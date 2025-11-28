@@ -4,11 +4,11 @@ const { catchAsync, AppError } = require('../utils/helpers');
 
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN
+    expiresIn: process.env.JWT_EXPIRES_IN || '15m'
   });
 
-  const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: process.env.REFRESH_EXPIRES_IN
+  const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET, {
+    expiresIn: process.env.REFRESH_EXPIRES_IN || '7d'
   });
 
   return { accessToken, refreshToken };
@@ -81,7 +81,7 @@ exports.refreshToken = catchAsync(async (req, res) => {
     throw new AppError('Refresh token required', 400);
   }
 
-  const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+  const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET);
   const user = await User.findById(decoded.id);
 
   if (!user) {
