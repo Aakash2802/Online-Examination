@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { ToastProvider } from './components/ToastContainer';
 import Footer from './components/Footer';
+import PageTransition from './components/PageTransition';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ExamList from './pages/ExamList';
@@ -86,8 +87,9 @@ function RoleBasedRedirect() {
 
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
+    <PageTransition>
+      <Routes>
+        <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route
         path="/exams"
@@ -177,8 +179,9 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
-      <Route path="/" element={<RoleBasedRedirect />} />
-    </Routes>
+        <Route path="/" element={<RoleBasedRedirect />} />
+      </Routes>
+    </PageTransition>
   );
 }
 
