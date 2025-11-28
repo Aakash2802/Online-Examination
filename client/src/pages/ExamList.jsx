@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
-import { ExamCardSkeleton } from '../components/Skeleton';
 
 export default function ExamList() {
   const [exams, setExams] = useState([]);
@@ -115,37 +114,8 @@ export default function ExamList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-        {/* Navigation Skeleton */}
-        <nav className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-600 to-indigo-600">
-          <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-200 rounded-xl skeleton-shimmer"></div>
-                <div className="h-6 w-32 bg-gray-200 rounded skeleton-shimmer"></div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="h-10 w-24 bg-gray-200 rounded-xl skeleton-shimmer"></div>
-                <div className="h-10 w-32 bg-gray-200 rounded-xl skeleton-shimmer"></div>
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
-          {/* Header Skeleton */}
-          <div className="mb-6 sm:mb-10">
-            <div className="h-10 w-64 bg-gray-200 rounded skeleton-shimmer mb-3"></div>
-            <div className="h-5 w-80 bg-gray-200 rounded skeleton-shimmer"></div>
-          </div>
-
-          {/* Exam Cards Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <ExamCardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading exams...</div>
       </div>
     );
   }
@@ -225,7 +195,7 @@ export default function ExamList() {
             {exams.map((exam, index) => (
               <div
                 key={exam._id}
-                className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform overflow-hidden border border-gray-100 flex flex-col h-full stagger-item card-3d-hover"
+                className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100 flex flex-col h-full stagger-item hover-lift"
               >
                 {/* Card Header */}
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 sm:p-4 md:p-6 relative min-h-[100px] sm:min-h-[120px] animate-gradient">

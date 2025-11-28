@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
-import { useCountUp } from '../hooks/useCountUp';
 
 export default function InstructorDashboard() {
   const navigate = useNavigate();
@@ -17,29 +16,20 @@ export default function InstructorDashboard() {
   const [loading, setLoading] = useState(true);
   const { user, logout } = useAuth();
 
-  // Animated counters
-  const totalExamsCount = useCountUp(stats.totalExams, 1500);
-  const totalStudentsCount = useCountUp(stats.totalStudents, 1500);
-  const totalAttemptsCount = useCountUp(stats.totalAttempts, 1500);
-  const avgScoreCount = useCountUp(stats.avgScore, 1500);
-
   const fetchData = async () => {
     try {
-      // Fetch all exams and stats in parallel
-      const [examsRes, statsRes] = await Promise.all([
-        api.get('/exams'),
-        api.get('/exams/stats/overview')
-      ]);
-
+      // Fetch all exams
+      const examsRes = await api.get('/exams');
       const examsData = examsRes.data.data;
       setExams(examsData);
 
-      const statsData = statsRes.data.data;
+      // For now, we'll just show exam count
+      // In future, we can add API endpoints to fetch all attempts for instructors
       setStats({
         totalExams: examsData.length,
-        totalStudents: statsData.totalStudents,
-        totalAttempts: statsData.totalAttempts,
-        avgScore: statsData.avgScore
+        totalStudents: 0, // TODO: Add API endpoint
+        totalAttempts: 0, // TODO: Add API endpoint
+        avgScore: 0 // TODO: Add API endpoint
       });
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -85,63 +75,13 @@ export default function InstructorDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-indigo-50 animate-fadeIn">
-        {/* Navigation Skeleton */}
-        <nav className="bg-white shadow-lg border-b-4">
-          <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-200 rounded-xl skeleton-shimmer"></div>
-                <div className="h-7 w-48 bg-gray-200 rounded skeleton-shimmer"></div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="h-10 w-32 bg-gray-200 rounded-xl skeleton-shimmer"></div>
-                <div className="h-10 w-24 bg-gray-200 rounded-xl skeleton-shimmer"></div>
-              </div>
-            </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-purple-50 to-indigo-50 animate-fadeIn">
+        <div className="text-center animate-scaleIn">
+          <div className="relative inline-block">
+            <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-indigo-400 rounded-full animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
           </div>
-        </nav>
-
-        <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
-          {/* Stats Cards Skeleton */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer"></div>
-                    <div className="h-8 w-16 bg-gray-200 rounded skeleton-shimmer"></div>
-                  </div>
-                  <div className="w-14 h-14 bg-gray-200 rounded-2xl skeleton-shimmer"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Quick Actions Skeleton */}
-          <div className="mb-6 sm:mb-10">
-            <div className="h-8 w-48 bg-gray-200 rounded skeleton-shimmer mb-6"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded-2xl skeleton-shimmer"></div>
-              ))}
-            </div>
-          </div>
-
-          {/* Table Skeleton */}
-          <div className="h-8 w-48 bg-gray-200 rounded skeleton-shimmer mb-6"></div>
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div className="h-12 bg-gray-200 skeleton-shimmer"></div>
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-16 border-t border-gray-100 flex items-center px-6 space-x-4">
-                <div className="h-4 w-32 bg-gray-200 rounded skeleton-shimmer"></div>
-                <div className="h-4 w-20 bg-gray-200 rounded skeleton-shimmer"></div>
-                <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer"></div>
-                <div className="flex-1"></div>
-                <div className="h-8 w-20 bg-gray-200 rounded skeleton-shimmer"></div>
-              </div>
-            ))}
-          </div>
+          <p className="mt-4 text-xl font-semibold text-gradient">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -192,11 +132,11 @@ export default function InstructorDashboard() {
       <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Total Exams</p>
-                <p className="text-3xl font-bold text-gradient">{totalExamsCount}</p>
+                <p className="text-3xl font-bold text-gradient">{stats.totalExams}</p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center animate-float shadow-lg group-hover:animate-glow">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,11 +146,11 @@ export default function InstructorDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Total Students</p>
-                <p className="text-3xl font-bold text-blue-600">{totalStudentsCount}</p>
+                <p className="text-3xl font-bold text-blue-600">{stats.totalStudents}</p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center animate-float shadow-lg group-hover:animate-glow">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,11 +160,11 @@ export default function InstructorDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Total Attempts</p>
-                <p className="text-3xl font-bold text-green-600">{totalAttemptsCount}</p>
+                <p className="text-3xl font-bold text-green-600">{stats.totalAttempts}</p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center animate-float shadow-lg group-hover:animate-glow">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,11 +174,11 @@ export default function InstructorDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Avg Score</p>
-                <p className="text-3xl font-bold text-yellow-600">{avgScoreCount}%</p>
+                <p className="text-3xl font-bold text-yellow-600">{stats.avgScore}%</p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center animate-float shadow-lg group-hover:animate-glow">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

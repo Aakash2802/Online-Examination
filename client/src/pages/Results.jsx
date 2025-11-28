@@ -1,25 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
-import Confetti from '../components/Confetti';
 
 export default function Results() {
   const { attemptId } = useParams();
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
       try {
         const res = await api.get(`/attempts/${attemptId}`);
         setAttempt(res.data.data);
-
-        // Show confetti if passed
-        const passed = res.data.data.percentageScore >= (res.data.data.examId?.passingScore || 50);
-        if (passed) {
-          setShowConfetti(true);
-        }
       } catch (err) {
         console.error('Failed to load results:', err);
       } finally {
@@ -49,9 +41,6 @@ export default function Results() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 sm:p-6 md:p-8 animate-fadeIn">
-      {/* Confetti on pass */}
-      {showConfetti && <Confetti duration={5000} pieces={150} />}
-
       <div className="container mx-auto max-w-4xl">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gradient animate-fadeInDown">Exam Results</h1>
 
@@ -69,13 +58,8 @@ export default function Results() {
             </div>
           </div>
 
-          <div className={`p-4 rounded-xl ${passed ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' : 'bg-gradient-to-r from-red-400 to-red-500 text-white'} animate-scaleIn ${passed ? 'celebrate-bounce' : ''}`}>
-            <p className="text-xl font-bold text-center">
-              {passed ? '🎉 CONGRATULATIONS! YOU PASSED! 🎉' : '❌ FAILED - Keep trying!'}
-            </p>
-            {passed && (
-              <p className="text-center text-sm mt-1 opacity-90">Great job! You've successfully completed this exam.</p>
-            )}
+          <div className={`p-4 rounded-xl ${passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} animate-scaleIn`}>
+            <p className="text-lg font-bold">{passed ? '🎉 PASSED' : '❌ FAILED'}</p>
           </div>
 
           <div className="mt-4 space-y-2 text-sm text-gray-600">

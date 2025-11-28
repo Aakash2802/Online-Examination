@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { ToastProvider } from './components/ToastContainer';
-import Footer from './components/Footer';
-import PageTransition from './components/PageTransition';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ExamList from './pages/ExamList';
@@ -87,9 +85,8 @@ function RoleBasedRedirect() {
 
 function AppRoutes() {
   return (
-    <PageTransition>
-      <Routes>
-        <Route path="/login" element={<Login />} />
+    <Routes>
+      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route
         path="/exams"
@@ -179,9 +176,8 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
-        <Route path="/" element={<RoleBasedRedirect />} />
-      </Routes>
-    </PageTransition>
+      <Route path="/" element={<RoleBasedRedirect />} />
+    </Routes>
   );
 }
 
@@ -191,12 +187,7 @@ function App() {
       <AuthProvider>
         <ToastProvider>
           <SocketProvider>
-            <div className="min-h-screen flex flex-col">
-              <div className="flex-grow">
-                <AppRoutes />
-              </div>
-              <Footer />
-            </div>
+            <AppRoutes />
           </SocketProvider>
         </ToastProvider>
       </AuthProvider>
