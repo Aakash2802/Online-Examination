@@ -7,16 +7,19 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+const socketOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+  : ['http://localhost:5173', 'http://localhost:5174'];
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || ['http://localhost:5173', 'http://localhost:5174'],
+    origin: socketOrigins,
     credentials: true
   }
 });
 
 // Middleware
 const allowedOrigins = process.env.CLIENT_URL
-  ? [process.env.CLIENT_URL]
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
   : ['http://localhost:5173', 'http://localhost:5174'];
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
