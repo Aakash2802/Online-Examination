@@ -2,8 +2,37 @@ const express = require('express');
 const router = express.Router();
 const Exam = require('../models/Exam');
 const Question = require('../models/Question');
+const User = require('../models/User');
+const Attempt = require('../models/Attempt');
 const { authenticate, authorizeRoles } = require('../middleware/authMiddleware');
 const { catchAsync } = require('../utils/helpers');
+
+// Get instructor/admin stats
+router.get('/stats/overview', authenticate, authorizeRoles('admin', 'instructor'), catchAsync(async (req, res) => {
+  // Count total students
+  const totalStudents = await User.countDocuments({ role: 'student' });
+
+  // Count total submitted/graded attempts
+  const totalAttempts = await Attempt.countDocuments({
+    status: { $in: ['submitted', 'graded'] }
+  });
+
+  // Calculate average score
+  const avgResult = await Attempt.aggregate([
+    { $match: { status: { $in: ['submitted', 'graded'] } } },
+    { $group: { _id: null, avgScore: { $avg: '$percentageScore' } } }
+  ]);
+  const avgScore = avgResult.length > 0 ? Math.round(avgResult[0].avgScore * 10) / 10 : 0;
+
+  res.status(200).json({
+    success: true,
+    data: {
+      totalStudents,
+      totalAttempts,
+      avgScore
+    }
+  });
+}));
 
 // Get all exams (students see published only)
 router.get('/', authenticate, catchAsync(async (req, res) => {

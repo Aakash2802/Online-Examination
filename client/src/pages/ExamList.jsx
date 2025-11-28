@@ -225,7 +225,7 @@ export default function ExamList() {
             {exams.map((exam, index) => (
               <div
                 key={exam._id}
-                className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100 flex flex-col h-full stagger-item hover-lift"
+                className="bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform overflow-hidden border border-gray-100 flex flex-col h-full stagger-item card-3d-hover"
               >
                 {/* Card Header */}
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 sm:p-4 md:p-6 relative min-h-[100px] sm:min-h-[120px] animate-gradient">
