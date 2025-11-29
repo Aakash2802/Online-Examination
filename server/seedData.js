@@ -98,7 +98,7 @@ const exams = [
       questions: ["692178cad337622b49d0a073", "692178cad337622b49d0a078", "692178cad337622b49d0a07d", "692178cad337622b49d0a084", "692178cad337622b49d0a089"],
       order: 0
     }],
-    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 24 } }
+    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 1 } }
   },
   {
     _id: "691ad2f027884c69cd95f21a",
@@ -115,7 +115,7 @@ const exams = [
       questions: ["692178d5d337622b49d0a0e5", "692178d5d337622b49d0a0ea", "692178d5d337622b49d0a0ef", "692178d5d337622b49d0a0f4", "692178d5d337622b49d0a0f9"],
       order: 0
     }],
-    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 24 } }
+    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 1 } }
   },
   {
     _id: "691ad2f027884c69cd95f21e",
@@ -132,7 +132,7 @@ const exams = [
       questions: ["692178e0d337622b49d0a15d", "692178e0d337622b49d0a162", "692178e0d337622b49d0a168", "692178e0d337622b49d0a16d", "692178e0d337622b49d0a172"],
       order: 0
     }],
-    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 24 } }
+    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 1 } }
   },
   {
     _id: "691af6b98963480bb3f0b1da",
@@ -149,7 +149,7 @@ const exams = [
       questions: ["692178ecd337622b49d0a1d7", "692178ecd337622b49d0a1dc", "692178ecd337622b49d0a1e1", "692178ecd337622b49d0a1e7", "692178ecd337622b49d0a1ec"],
       order: 0
     }],
-    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 24 } }
+    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 1 } }
   },
   {
     _id: "691ad2f027884c69cd95f222",
@@ -166,7 +166,7 @@ const exams = [
       questions: ["692178aed337622b49d09f85", "692178aed337622b49d09f8a", "692178aed337622b49d09f8f", "692178aed337622b49d09f94", "692178aed337622b49d09f99"],
       order: 0
     }],
-    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 24 } }
+    settings: { shuffleQuestions: true, showResults: true, autoReset: { enabled: false }, attemptRollingWindow: { enabled: true, windowHours: 1 } }
   }
 ];
 
