@@ -51,6 +51,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/exams', require('./routes/examRoutes'));
 app.use('/api/attempts', require('./routes/attemptRoutes'));
 app.use('/api/proctoring', require('./routes/proctoringRoutes'));
+app.use('/api/seed', require('./routes/seedRoutes'));
 
 // Health check
 app.get('/health', (req, res) => {

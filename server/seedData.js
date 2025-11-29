@@ -164,14 +164,26 @@ const exams = [
   }
 ];
 
-async function seedDatabase() {
+async function seedDatabase(force = false) {
   const db = mongoose.connection.db;
 
   // Check if database already has data
   const examCount = await db.collection('exams').countDocuments();
-  if (examCount > 0) {
+  if (examCount > 0 && !force) {
     console.log('[Seed] Database already has data, skipping seed');
-    return;
+    return { skipped: true, message: 'Database already has data' };
+  }
+
+  // If force mode, clear all data first
+  if (force) {
+    console.log('[Seed] Force mode - clearing all data...');
+    await db.collection('users').deleteMany({});
+    await db.collection('questions').deleteMany({});
+    await db.collection('exams').deleteMany({});
+    await db.collection('attempts').deleteMany({});
+    await db.collection('proctoringlogs').deleteMany({});
+    await db.collection('auditlogs').deleteMany({});
+    console.log('[Seed] All data cleared');
   }
 
   console.log('[Seed] Seeding database with initial data...');
@@ -238,6 +250,17 @@ async function seedDatabase() {
   console.log('[Seed] Created ' + exams.length + ' demo attempts');
 
   console.log('[Seed] Database seeded successfully!');
+
+  return {
+    success: true,
+    message: 'Database seeded successfully',
+    data: {
+      users: users.length,
+      questions: questions.length,
+      exams: exams.length,
+      attempts: exams.length
+    }
+  };
 }
 
 module.exports = { seedDatabase };
