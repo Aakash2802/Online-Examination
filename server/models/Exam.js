@@ -15,7 +15,7 @@ const examSchema = new mongoose.Schema({
   status: { type: String, enum: ['draft', 'pending', 'published', 'archived'], default: 'draft' },
   startWindow: { type: Date },
   endWindow: { type: Date },
-  maxAttempts: { type: Number, default: 1 },
+  maxAttempts: { type: Number, default: 3 },
   totalDuration: { type: Number, required: true },
   passingScore: { type: Number, default: 50 },
   sections: [sectionSchema],
