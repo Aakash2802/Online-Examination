@@ -188,45 +188,65 @@ async function seedDatabase(force = false) {
 
   console.log('[Seed] Seeding database with initial data...');
 
-  // Seed users
+  // Create fresh copies of data to avoid mutation issues
   const bcrypt = require('bcrypt');
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  for (const user of users) {
-    user._id = new mongoose.Types.ObjectId(user._id);
-    user.password = hashedPassword;
-  }
-  await db.collection('users').insertMany(users);
-  console.log('[Seed] Created ' + users.length + ' users');
+  // Seed users
+  const usersToInsert = users.map(user => ({
+    _id: new mongoose.Types.ObjectId(user._id),
+    email: user.email,
+    password: hashedPassword,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    role: user.role
+  }));
+  await db.collection('users').insertMany(usersToInsert);
+  console.log('[Seed] Created ' + usersToInsert.length + ' users');
 
   // Seed questions
-  for (const q of questions) {
-    q._id = new mongoose.Types.ObjectId(q._id);
-    q.createdBy = new mongoose.Types.ObjectId(q.createdBy);
-  }
-  await db.collection('questions').insertMany(questions);
-  console.log('[Seed] Created ' + questions.length + ' questions');
+  const questionsToInsert = questions.map(q => ({
+    _id: new mongoose.Types.ObjectId(q._id),
+    prompt: q.prompt,
+    type: q.type,
+    options: q.options,
+    correctAnswers: q.correctAnswers,
+    points: q.points,
+    difficulty: q.difficulty,
+    category: q.category,
+    createdBy: new mongoose.Types.ObjectId(q.createdBy)
+  }));
+  await db.collection('questions').insertMany(questionsToInsert);
+  console.log('[Seed] Created ' + questionsToInsert.length + ' questions');
 
   // Seed exams
-  for (const exam of exams) {
-    exam._id = new mongoose.Types.ObjectId(exam._id);
-    exam.createdBy = new mongoose.Types.ObjectId(exam.createdBy);
-    exam.sections = exam.sections.map(s => ({
-      ...s,
+  const examsToInsert = exams.map(exam => ({
+    _id: new mongoose.Types.ObjectId(exam._id),
+    title: exam.title,
+    description: exam.description,
+    createdBy: new mongoose.Types.ObjectId(exam.createdBy),
+    status: exam.status,
+    passingScore: exam.passingScore,
+    sections: exam.sections.map(s => ({
+      title: s.title,
+      instructions: s.instructions,
+      duration: s.duration,
+      order: s.order,
       _id: new mongoose.Types.ObjectId(),
       questions: s.questions.map(q => new mongoose.Types.ObjectId(q))
-    }));
-  }
-  await db.collection('exams').insertMany(exams);
-  console.log('[Seed] Created ' + exams.length + ' exams');
+    })),
+    settings: exam.settings
+  }));
+  await db.collection('exams').insertMany(examsToInsert);
+  console.log('[Seed] Created ' + examsToInsert.length + ' exams');
 
   // Create sample attempts for demo user
   const userId = new mongoose.Types.ObjectId("691ff5639fc890a58ae4438f");
   const now = new Date();
   const scores = [83, 90, 75, 88, 95];
 
-  for (let i = 0; i < exams.length; i++) {
-    const exam = exams[i];
+  for (let i = 0; i < examsToInsert.length; i++) {
+    const exam = examsToInsert[i];
     const hoursAgo = new Date(now - (i + 1) * 60 * 60 * 1000);
     const score = scores[i];
 
@@ -247,7 +267,7 @@ async function seedDatabase(force = false) {
       updatedAt: new Date(hoursAgo.getTime() + 25 * 60 * 1000)
     });
   }
-  console.log('[Seed] Created ' + exams.length + ' demo attempts');
+  console.log('[Seed] Created ' + examsToInsert.length + ' demo attempts');
 
   console.log('[Seed] Database seeded successfully!');
 
@@ -255,10 +275,10 @@ async function seedDatabase(force = false) {
     success: true,
     message: 'Database seeded successfully',
     data: {
-      users: users.length,
-      questions: questions.length,
-      exams: exams.length,
-      attempts: exams.length
+      users: usersToInsert.length,
+      questions: questionsToInsert.length,
+      exams: examsToInsert.length,
+      attempts: examsToInsert.length
     }
   };
 }
