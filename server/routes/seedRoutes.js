@@ -23,7 +23,7 @@ router.get('/reset', async (req, res) => {
       message: 'Database reset and seeded successfully!',
       data: result.data,
       credentials: {
-        admin: { email: 'admin@test.com', password: 'password123' },
+        admin: { email: 'aakash@admin.com', password: 'aakash1234' },
         instructor: { email: 'instructor@test.com', password: 'password123' },
         student: { email: 'aakash@gmail.com', password: 'password123' }
       }
