@@ -24,8 +24,12 @@ const allowedOrigins = process.env.CLIENT_URL
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
-// DB connection
-connectDB();
+// DB connection and auto-seed
+connectDB().then(async () => {
+  // Auto-seed database if empty (for production deployment)
+  const { seedDatabase } = require('./seedData');
+  await seedDatabase();
+}).catch(err => console.error('DB connection error:', err));
 
 // Register all models before routes
 require('./models/User');
