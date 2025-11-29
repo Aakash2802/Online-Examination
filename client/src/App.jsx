@@ -14,6 +14,7 @@ import Results from './pages/Results';
 import ExamResults from './pages/ExamResults';
 import AllAttempts from './pages/AllAttempts';
 import ProctoringViewer from './pages/ProctoringViewer';
+import Footer from './components/Footer';
 
 function PrivateRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -187,7 +188,12 @@ function App() {
       <AuthProvider>
         <ToastProvider>
           <SocketProvider>
-            <AppRoutes />
+            <div className="min-h-screen flex flex-col">
+              <div className="flex-grow">
+                <AppRoutes />
+              </div>
+              <Footer />
+            </div>
           </SocketProvider>
         </ToastProvider>
       </AuthProvider>
