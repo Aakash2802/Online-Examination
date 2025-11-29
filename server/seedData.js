@@ -1,5 +1,6 @@
 // Initial seed data for the Online Examination System
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const users = [
   {
@@ -189,7 +190,6 @@ async function seedDatabase(force = false) {
   console.log('[Seed] Seeding database with initial data...');
 
   // Create fresh copies of data to avoid mutation issues
-  const bcrypt = require('bcrypt');
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   // Seed users
