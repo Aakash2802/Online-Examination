@@ -149,8 +149,9 @@ export default function Login() {
         <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 animate-fadeInUp delay-300 hover-lift">
           <p className="text-xs font-semibold text-gray-700 mb-2">Demo Credentials:</p>
           <div className="space-y-1 text-xs text-gray-600">
-            <p><strong>Student:</strong> student@test.com / Student123!</p>
-            <p><strong>Instructor:</strong> instructor@test.com / Instructor123!</p>
+            <p><strong>Student:</strong> aakash@gmail.com / password123</p>
+            <p><strong>Instructor:</strong> instructor@test.com / password123</p>
+            <p><strong>Admin:</strong> admin@test.com / password123</p>
           </div>
         </div>
       </div>
