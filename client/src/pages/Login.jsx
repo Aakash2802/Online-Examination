@@ -151,7 +151,6 @@ export default function Login() {
           <div className="space-y-1 text-xs text-gray-600">
             <p><strong>Student:</strong> aakash@gmail.com / password123</p>
             <p><strong>Instructor:</strong> instructor@test.com / password123</p>
-            <p><strong>Admin:</strong> admin@test.com / password123</p>
           </div>
         </div>
       </div>
