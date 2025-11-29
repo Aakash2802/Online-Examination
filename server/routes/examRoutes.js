@@ -34,6 +34,43 @@ router.get('/stats/overview', authenticate, authorizeRoles('admin', 'instructor'
   });
 }));
 
+// Get all students with their attempt stats (admin only)
+router.get('/stats/students', authenticate, authorizeRoles('admin', 'instructor'), catchAsync(async (req, res) => {
+  // Get all students
+  const students = await User.find({ role: 'student' })
+    .select('firstName lastName email createdAt')
+    .lean();
+
+  // Get attempt stats for each student
+  const studentsWithStats = await Promise.all(students.map(async (student) => {
+    const attempts = await Attempt.find({
+      userId: student._id,
+      status: { $in: ['submitted', 'graded'] }
+    }).select('percentageScore examId submittedAt');
+
+    const totalAttempts = attempts.length;
+    const avgScore = totalAttempts > 0
+      ? Math.round(attempts.reduce((sum, a) => sum + (a.percentageScore || 0), 0) / totalAttempts)
+      : 0;
+    const passedCount = attempts.filter(a => a.percentageScore >= 50).length;
+
+    return {
+      ...student,
+      totalAttempts,
+      avgScore,
+      passedCount,
+      lastActivity: attempts.length > 0
+        ? attempts.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt))[0].submittedAt
+        : student.createdAt
+    };
+  }));
+
+  res.status(200).json({
+    success: true,
+    data: studentsWithStats
+  });
+}));
+
 // Get all exams (students see published only)
 router.get('/', authenticate, catchAsync(async (req, res) => {
   const { available } = req.query;

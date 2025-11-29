@@ -15,6 +15,9 @@ export default function InstructorDashboard() {
     avgScore: 0
   });
   const [loading, setLoading] = useState(true);
+  const [students, setStudents] = useState([]);
+  const [showStudentsModal, setShowStudentsModal] = useState(false);
+  const [loadingStudents, setLoadingStudents] = useState(false);
   const { user, logout } = useAuth();
 
   // Animated counters
@@ -80,6 +83,20 @@ export default function InstructorDashboard() {
     } catch (error) {
       console.error('Failed to delete exam:', error);
       alert('Failed to delete exam');
+    }
+  };
+
+  const fetchStudents = async () => {
+    setLoadingStudents(true);
+    try {
+      const res = await api.get('/exams/stats/students');
+      setStudents(res.data.data);
+      setShowStudentsModal(true);
+    } catch (error) {
+      console.error('Failed to fetch students:', error);
+      alert('Failed to load students');
+    } finally {
+      setLoadingStudents(false);
     }
   };
 
@@ -206,11 +223,15 @@ export default function InstructorDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
+          <div
+            onClick={fetchStudents}
+            className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Total Students</p>
                 <p className="text-3xl font-bold text-blue-600">{totalStudentsCount}</p>
+                <p className="text-xs text-blue-400 mt-1">Click to view details</p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center animate-float shadow-lg group-hover:animate-glow">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -435,6 +456,101 @@ export default function InstructorDashboard() {
           )}
         </div>
       </div>
+
+      {/* Students Modal */}
+      {showStudentsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-scaleIn">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold text-white">Student Details</h2>
+                <p className="text-blue-100 text-sm mt-1">{students.length} students registered</p>
+              </div>
+              <button
+                onClick={() => setShowStudentsModal(false)}
+                className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+              {loadingStudents ? (
+                <div className="p-8 text-center">
+                  <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading students...</p>
+                </div>
+              ) : students.length === 0 ? (
+                <div className="p-8 text-center">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600">No students found</p>
+                </div>
+              ) : (
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 sticky top-0">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Student</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Attempts</th>
+                      <th className="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Avg Score</th>
+                      <th className="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Passed</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Last Activity</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {students.map((student, index) => (
+                      <tr key={student._id} className="hover:bg-blue-50 transition-colors stagger-item">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                              {student.firstName?.[0]}{student.lastName?.[0]}
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-semibold text-gray-900">{student.firstName} {student.lastName}</p>
+                              <p className="text-xs text-gray-500">Joined {new Date(student.createdAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{student.email}</td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {student.totalAttempts}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${
+                            student.avgScore >= 70 ? 'bg-green-100 text-green-800' :
+                            student.avgScore >= 50 ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {student.avgScore}%
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            {student.passedCount}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600">
+                          {new Date(student.lastActivity).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
