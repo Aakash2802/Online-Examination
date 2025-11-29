@@ -60,13 +60,56 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 animate-fadeIn">
-        <div className="text-center animate-scaleIn">
-          <div className="relative inline-block">
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-indigo-400 rounded-full animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+        {/* Navigation Skeleton */}
+        <nav className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-600 to-indigo-600">
+          <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gray-200 rounded-xl skeleton-shimmer"></div>
+                <div className="h-6 w-32 bg-gray-200 rounded skeleton-shimmer"></div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="h-10 w-24 bg-gray-200 rounded-xl skeleton-shimmer"></div>
+                <div className="h-10 w-32 bg-gray-200 rounded-xl skeleton-shimmer"></div>
+              </div>
+            </div>
           </div>
-          <p className="mt-4 text-xl font-semibold text-gradient">Loading dashboard...</p>
+        </nav>
+
+        <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
+          {/* Stats Cards Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer"></div>
+                    <div className="h-8 w-16 bg-gray-200 rounded skeleton-shimmer"></div>
+                  </div>
+                  <div className="w-14 h-14 bg-gray-200 rounded-2xl skeleton-shimmer"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Exam History Skeleton */}
+          <div>
+            <div className="h-8 w-48 bg-gray-200 rounded skeleton-shimmer mb-6"></div>
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="h-12 bg-gray-200 skeleton-shimmer"></div>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center space-x-4 p-4 border-b border-gray-100">
+                  <div className="h-4 w-40 bg-gray-200 rounded skeleton-shimmer"></div>
+                  <div className="h-4 w-20 bg-gray-200 rounded skeleton-shimmer"></div>
+                  <div className="h-4 w-16 bg-gray-200 rounded skeleton-shimmer"></div>
+                  <div className="h-6 w-20 bg-gray-200 rounded-full skeleton-shimmer"></div>
+                  <div className="h-4 w-24 bg-gray-200 rounded skeleton-shimmer"></div>
+                  <div className="h-8 w-24 bg-gray-200 rounded-lg skeleton-shimmer"></div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -124,7 +167,7 @@ export default function Dashboard() {
       <div className="container mx-auto px-3 sm:px-6 py-6 sm:py-12">
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-10">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Total Exams</p>
@@ -138,7 +181,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Completed</p>
@@ -152,7 +195,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Average Score</p>
@@ -166,7 +209,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 stagger-item hover:shadow-2xl transition-all duration-300 hover-lift group stats-glow">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm mb-1 font-medium">Passed</p>
