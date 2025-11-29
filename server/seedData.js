@@ -13,10 +13,10 @@ const users = [
   },
   {
     "_id": "691ad2ea27884c69cd95f172",
-    "email": "admin@test.com",
-    "password": "$2b$10$rKd.YqJ8QJzJVQJzJVQJzOVQJzJVQJzJVQJzJVQJzJVQJzJVQJzJV",
-    "firstName": "Admin",
-    "lastName": "User",
+    "email": "aakash@admin.com",
+    "password": "$2b$10$rKd.YqJ8QJzJVQJzJVQJzOVQJzJVQJzJVQJzJVQJzJVQJzJVQJzJV", // will be hashed to aakash1234
+    "firstName": "Aakash",
+    "lastName": "Admin",
     "role": "admin"
   },
   {
@@ -191,16 +191,17 @@ async function seedDatabase(force = false) {
 
   // Create fresh copies of data to avoid mutation issues
   const hashedPassword = await bcrypt.hash('password123', 10);
+  const adminPassword = await bcrypt.hash('aakash1234', 10);
 
-  // Seed users
-  const usersToInsert = users.map(user => ({
+  // Seed users with role-specific passwords
+  const usersToInsert = await Promise.all(users.map(async (user) => ({
     _id: new mongoose.Types.ObjectId(user._id),
     email: user.email,
-    password: hashedPassword,
+    password: user.role === 'admin' ? adminPassword : hashedPassword,
     firstName: user.firstName,
     lastName: user.lastName,
     role: user.role
-  }));
+  })));
   await db.collection('users').insertMany(usersToInsert);
   console.log('[Seed] Created ' + usersToInsert.length + ' users');
 
