@@ -17,11 +17,27 @@ const io = new Server(server, {
   }
 });
 
-// Middleware
+// Middleware - Allow all vercel.app and localhost origins
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map(url => url.trim())
   : ['http://localhost:5173', 'http://localhost:5174'];
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    // Allow all vercel.app domains and localhost
+    if (origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
+        allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // DB connection and auto-seed
