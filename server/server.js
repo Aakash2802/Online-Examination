@@ -17,36 +17,15 @@ const io = new Server(server, {
   }
 });
 
-// Middleware - Allow all vercel.app and localhost origins
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
-  : ['http://localhost:5173', 'http://localhost:5174'];
-
+// Middleware - CORS configuration
 app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-
-    // Check if origin matches allowed patterns
-    const isVercel = /^https:\/\/.*\.vercel\.app$/.test(origin);
-    const isLocalhost = /localhost/.test(origin);
-    const isInAllowedList = allowedOrigins.includes(origin);
-
-    if (isVercel || isLocalhost || isInAllowedList) {
-      return callback(null, true);
-    }
-
-    // For debugging - log rejected origins
-    console.log('CORS rejected origin:', origin);
-    return callback(null, false);
-  },
+  origin: true, // Allow all origins temporarily for debugging
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   preflightContinue: false,
-  optionsSuccessStatus: 204,
-  maxAge: 86400 // 24 hours
+  optionsSuccessStatus: 204
 }));
 app.use(express.json());
 
