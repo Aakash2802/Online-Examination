@@ -28,9 +28,9 @@ app.use(cors({
     if (!origin) return callback(null, true);
 
     // Allow all vercel.app domains and localhost
-    if (origin.endsWith('.vercel.app') ||
+    if (origin && (origin.endsWith('.vercel.app') ||
         origin.includes('localhost') ||
-        allowedOrigins.includes(origin)) {
+        allowedOrigins.includes(origin))) {
       return callback(null, true);
     }
 
@@ -38,8 +38,10 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
   maxAge: 86400 // 24 hours
 }));
 app.use(express.json());
