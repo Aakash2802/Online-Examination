@@ -5,7 +5,8 @@ const authLimiter = rateLimit({
   max: process.env.NODE_ENV === 'production' ? 20 : 5, // More attempts in production
   message: 'Too many login attempts, please try again later.',
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skip: (req) => req.method === 'OPTIONS' // Skip rate limiting for CORS preflight
 });
 
 const apiLimiter = rateLimit({

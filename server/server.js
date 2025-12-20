@@ -27,14 +27,18 @@ app.use(cors({
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
 
-    // Allow all vercel.app domains and localhost
-    if (origin && (origin.endsWith('.vercel.app') ||
-        origin.includes('localhost') ||
-        allowedOrigins.includes(origin))) {
+    // Check if origin matches allowed patterns
+    const isVercel = /^https:\/\/.*\.vercel\.app$/.test(origin);
+    const isLocalhost = /localhost/.test(origin);
+    const isInAllowedList = allowedOrigins.includes(origin);
+
+    if (isVercel || isLocalhost || isInAllowedList) {
       return callback(null, true);
     }
 
-    callback(new Error('Not allowed by CORS'));
+    // For debugging - log rejected origins
+    console.log('CORS rejected origin:', origin);
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
